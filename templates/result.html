@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vulnerability Detection Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .result {
+            margin-bottom: 20px;
+        }
+        .result h2 {
+            color: #333;
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 5px;
+        }
+        .result pre {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap; /* Preserve whitespace and line breaks */
+            overflow-x: auto; /* Add horizontal scroll if content is too wide */
+        }
+       
+        .result .status.vulnerable {
+            color: #dc3545; /* Red color for vulnerabilities */
+        }
+        .result .status.not-vulnerable {
+            color: #28a745; /* Green color for non-vulnerabilities */
+        }
+        .vulnerable-text {
+            color: #dc3545; /* Red color for 'Vulnerable: Yes' */
+            font-weight: bold;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Vulnerability Detection Results</h1>
+
+        {% if result %}
+            {% if result['csrf'] %}
+                <div class="result">
+                    <h2>CSRF Vulnerability</h2>
+                    <pre>{{ result['csrf'] }}</pre>
+                </div>
+            {% endif %}
+
+            {% if result['sqli'] %}
+                <div class="result">
+                    <h2>SQL Injection Vulnerability</h2>
+                    <pre>{{ result['sqli'] }}</pre>
+                </div>
+            {% endif %}
+
+            {% if result['ssrf'] %}
+                <div class="result">
+                    <h2>SSRF Vulnerability</h2>
+                    <pre>{{ result['ssrf'] }}</pre>
+                </div>
+            {% endif %}
+
+            {% if result['xxe'] %}
+                <div class="result">
+                    <h2>XXE Vulnerability</h2>
+                    <pre>{{ result['xxe'] }}</pre>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="result">
+                <h2>No Results</h2>
+                <p>No results were generated. Please ensure the vulnerability tests were run correctly.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

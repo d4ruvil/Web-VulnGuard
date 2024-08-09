@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vulnerability Detector</title>
+    <style>
+        /* Reset some default styles */
+        body, h1, p, form, input, select, textarea, button {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #4cafa0;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #4c7daf;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #a04545;
+        }
+
+        select {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .result {
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+    <script>
+        function updateFormFields() {
+            const vulnerability = document.getElementById('vulnerability').value;
+            const paramField = document.getElementById('param');
+            const cookiesField = document.getElementById('cookies');
+            const paramLabel = document.querySelector('label[for="param"]');
+            const cookiesLabel = document.querySelector('label[for="cookies"]');
+
+            if (vulnerability === 'sqli' || vulnerability === 'all') {
+                paramField.style.display = 'block';
+                paramLabel.style.display = 'block';
+                paramField.required = true;
+            } else {
+                paramField.style.display = 'none';
+                paramLabel.style.display = 'none';
+                paramField.required = false;
+            }
+
+            if (vulnerability === 'xxe' || vulnerability === 'all') {
+                cookiesField.style.display = 'block';
+                cookiesLabel.style.display = 'block';
+                cookiesField.required = true;
+            } else {
+                cookiesField.style.display = 'none';
+                cookiesLabel.style.display = 'none';
+                cookiesField.required = false;
+            }
+        }
+
+        function validateForm(event) {
+            const vulnerability = document.getElementById('vulnerability').value;
+            const paramField = document.getElementById('param');
+            const cookiesField = document.getElementById('cookies');
+
+            if ((vulnerability === 'sqli' || vulnerability === 'all') && !paramField.value.trim()) {
+                alert('Parameter is required for SQLi or All vulnerabilities.');
+                event.preventDefault(); // Prevent form submission
+            }
+
+            if ((vulnerability === 'xxe' || vulnerability === 'all') && !cookiesField.value.trim()) {
+                alert('Cookies are required for XXE or All vulnerabilities.');
+                event.preventDefault(); // Prevent form submission
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateFormFields();
+            document.getElementById('vulnerability').addEventListener('change', updateFormFields);
+            document.querySelector('form').addEventListener('submit', validateForm);
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Vulnerability Detector</h1>
+        <form action="/" method="post">
+            <label for="vulnerability">Choose Vulnerability:</label>
+            <select name="vulnerability" id="vulnerability">
+                <option value="csrf">CSRF</option>
+                <option value="ssrf">SSRF</option>
+                <option value="xxe">XXE</option>
+                <option value="sqli">SQLi</option>
+                <option value="all">All</option>
+            </select>
+
+            <label for="url">URL:</label>
+            <input type="text" name="url" id="url" required>
+
+            <label for="param" style="display:none;">Parameter (for SQLi):</label>
+            <input type="text" name="param" id="param" style="display:none;">
+
+            <label for="cookies" style="display:none;">Cookies (for XXE):</label>
+            <textarea name="cookies" id="cookies" style="display:none;"></textarea>
+
+            <button type="submit">Scan</button>
+        </form>
+    </div>
+</body>
+</html>
